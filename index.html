@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toko Tante</title>
+    <style>
+        :root {
+            --warna-utama: #8e44ad;
+            --warna-teks: #2c3e50;
+            --warna-latar: #fafafa;
+            --warna-putih: #ffffff;
+            --warna-abu: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--warna-latar);
+            margin: 0;
+            padding: 0;
+            color: var(--warna-teks);
+            font-size: 16px;
+        }
+
+        nav {
+            background: var(--warna-utama);
+            padding: 10px 20px;
+            text-align: right;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        header {
+            background: var(--warna-utama);
+            color: white;
+            padding: 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 80px;
+            border-radius: 10px;
+            object-fit: contain;
+            mix-blend-mode: color-burn;
+        }
+
+        .banner-iklan {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .banner-iklan img {
+            width: 100%;
+            max-width: 728px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .filter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .filter select,
+        .filter input {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background: var(--warna-abu);
+        }
+
+        .produk {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            justify-items: center;
+        }
+
+        .produk-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 220px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .produk-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .produk-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        button {
+            background: var(--warna-utama);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #732d91;
+        }
+
+        .form-pemesanan,
+        .tabel-pesanan {
+            padding: 20px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: var(--warna-abu);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--warna-abu);
+        }
+
+        h2,
+        h3 {
+            margin-bottom: 10px;
+            color: var(--warna-teks);
+        }
+
+        #keranjang {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            display: none;
+        }
+
+        #keranjang table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #keranjang th,
+        #keranjang td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .keranjang-button {
+            font-size: 14px;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #8e44ad;
+            color: white;
+        }
+
+        .keranjang-button:hover {
+            background-color: #732d91;
+        }
+
+        .jumlah-pesan {
+            display: inline-block;
+            padding: 0 10px;
+            font-size: 16px;
+        }
+
+        .keranjang-button-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="#" onclick="loginTante()">Admin</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/169bda4a9eb121e4d672f04ec1ef4a7fcec1de19/logo-baru.jpeg"
+                alt="Logo Toko" class="logo">
+            <div>
+                <h1>Selamat Datang di Kedai JSM</h1>
+                <p id="kataPengantar">Rasanya ngangenin!!!
+                </p>
+            </div>
+        </div>
+    </header>
+    <div class="banner-iklan">
+        <a href="https://link-iklan.com">
+            <img src="https://link-gambar-iklan.com/banner.jpg" alt="Promo Spesial" />
+        </a>
+    </div>
+    <div class="filter">
+        <select id="kategori" onchange="filterProduk()">
+            <option value="">Semua Kategori</option>
+            <option value="Makanan Berat">Makanan Berat</option>
+            <option value="Cemilan">Cemilan</option>
+            <option value="Minuman">Minuman</option>
+        </select>
+        <input type="text" id="pencarian" oninput="filterProduk()" placeholder="Cari produk..." />
+    </div>
+    <div class="produk">
+        <div class="produk-item" data-kategori="Cemilan">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/roti%20bakar%20mini.jpeg"
+                alt="Roti bakar">
+            <h3>Roti bakar</h3>
+            <p>Harga: Rp5.000</p>
+            <button onclick="tambahKeranjang('Roti bakar', 5000, 'Makanan cemilan')">Tambah ke Keranjang</button>
+        </div>
+
+        <div class="produk-item" data-kategori="Minuman">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/pop%20es.jpeg"
+                alt="Pop es">
+            <h3>pop es</h3>
+            <p>Harga: Rp5.000</p>
+            <button onclick="tambahKeranjang('Pop es', 5000, 'Minuman')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Minuman">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/14ffd2a3b6d4b4c4dfc990c931c97276c9b6f4a8/ini%20kopi%20goodday%20dijamin%20enak%20mantap%20bagus%20ayo….jpeg"
+                alt="Es Good day">
+            <h3>Es Good day</h3>
+            <p>Harga: Rp5.000</p>
+            <button onclick="tambahKeranjang('es Good day', 5000, 'Minuman')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Minuman">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/14ffd2a3b6d4b4c4dfc990c931c97276c9b6f4a8/1278021e-c79b-4c7e-8cf2-4a1840aacd74.jpeg"
+                alt="Soda gembira">
+            <h3>Es soda gembira</h3>
+            <p>Harga: Rp5.000</p>
+            <button onclick="tambahKeranjang('Soda Gembira', 5000, 'Minuman')">Tambah ke Keranjang</button>
+        </div>
+
+        <div class="produk-item" data-kategori="Cemilan">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/kebab.jpeg"
+                alt="Kebab daging">
+            <h3>Kebab daging</h3>
+            <p>Harga: Rp9.000</p>
+            <button onclick="tambahKeranjang('Kebab daging', 9000, 'Cemilan')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Cemilan">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/dimsum%20chili%20oil.jpeg"
+                alt="Dimsum chili oil">
+            <h3>Dimsum chili oil</h3>
+            <p>Harga: Rp2.500/pcs</p>
+            <button onclick="tambahKeranjang('Dimsum chili oil', 2500, 'Cemilan')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Cemilan">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/effb47fbef03bbe62e4c77b6355b1aabb33fb610/%F0%9F%98%8B.jpeg"
+                alt="Gorengan">
+            <h3>gorengan</h3>
+            <p>Harga: Rp5.000</p>
+            <button onclick="tambahKeranjang('Gorengan', 5000, 'Cemilan')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Cemilan">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/12af53a71e0972292d0d8c2faca97a92e0533c83/471b05d5-9ad7-4c96-9008-38047d20bd04.jpeg"
+                alt="Tempura">
+            <h3>Tempura goreng</h3>
+            <p>Harga: Rp2.000/3pcs</p>
+            <button onclick="tambahKeranjang('Tempura', 2000, 'Cemilan')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Makanan berat">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/ayam%20geprek.jpeg"
+                alt="Makanan berat">
+            <h3>ayam geprek</h3>
+            <p>Harga: Rp10.000</p>
+            <button onclick="tambahKeranjang('Ayam geprek', 10000, 'Makanan berat')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Makanan berat">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/Tahu%20Gimbal%2C%20Khas%20Semarang.jpeg"
+                alt="Tahu gimbal">
+            <h3>tahu gimbal</h3>
+            <p>Harga: Rp14.000</p>
+            <button onclick="tambahKeranjang('Tahu gimbal', 14.000, 'Makanan berat')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Makanan berat">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/Karedok%2C%20Khas%20Jawa%20Barat.jpeg"
+                alt="Gado-gado">
+            <h3>gado-gado</h3>
+            <p>Harga: Rp10.000</p>
+            <button onclick="tambahKeranjang('gado-gado', 10000, 'Makanan berat')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Makanan berat">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/bd3ffc4edb930402362b3ff1383512f640a3eae2/3835eef9-8a3e-4295-8c55-c3559c4fedea.jpeg"
+                alt="Teriyaki">
+            <h3>teriyaki</h3>
+            <p>Harga: Rp15.000</p>
+            <button onclick="tambahKeranjang('Teriyaki', 15000, 'Makanan berat')">Tambah ke Keranjang</button>
+        </div>
+        <div class="produk-item" data-kategori="Makanan berat">
+            <img src="https://raw.githubusercontent.com/awrel25/penjualan/f57e469ba07aa3cb5e98baf80774aa4136b94f47/Ayam%20asam%20manis.jpeg"
+                alt="Ayam asam manis">
+            <h3>ayam asam manis</h3>
+            <p>Harga: Rp10.000</p>
+            <button onclick="tambahKeranjang('Ayam asam manis', 10000, 'Makanan berat')">Tambah ke Keranjang</button>
+        </div>
+    </div>
+
+    <div id="keranjang">
+        <h2>Keranjang Belanja</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Produk</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Total</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="keranjang-body"></tbody>
+        </table>
+        <button class="keranjang-button" onclick="lanjutKeFormulir()">Pesan Sekarang</button>
+    </div>
+
+    <script>
+        function loginTante() {
+          const password = prompt("Masukkan password admin:");
+          if (password === "admin123") {
+            window.location.href = "akses-admin.html";
+          } else if (password !== null) {
+            alert("Password salah!");
+          }
+        }
+    
+        function tambahKeranjang(nama, harga, kategori) {
+          let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+          let produk = keranjang.find(p => p.nama === nama);
+          if (produk) {
+            produk.jumlah++;
+          } else {
+            keranjang.push({ nama, harga, kategori, jumlah: 1 });
+          }
+          localStorage.setItem("keranjang", JSON.stringify(keranjang));
+          tampilkanKeranjang();
+        }
+    
+        function tampilkanKeranjang() {
+          let keranjang = JSON.parse(localStorage.getItem('keranjang')) || [];
+          let keranjangBody = document.getElementById('keranjang-body');
+          keranjangBody.innerHTML = '';
+          let total = 0;
+    
+          keranjang.forEach((item, index) => {
+            const subtotal = item.harga * item.jumlah;
+            total += subtotal;
+            keranjangBody.innerHTML += `
+              <tr>
+                <td>${item.nama}</td>
+                <td>Rp ${item.harga.toLocaleString()}</td>
+                <td>
+                  <button class="keranjang-button-small" onclick="ubahJumlah(${index}, -1)">-</button>
+                  <span class="jumlah-pesan">${item.jumlah}</span>
+                  <button class="keranjang-button-small" onclick="ubahJumlah(${index}, 1)">+</button>
+                </td>
+                <td>Rp ${subtotal.toLocaleString()}</td>
+                <td><button class="keranjang-button" onclick="hapusProduk(${index})">Hapus</button></td>
+              </tr>
+            `;
+          });
+    
+          document.getElementById('keranjang').style.display = keranjang.length > 0 ? 'block' : 'none';
+        }
+    
+        function ubahJumlah(index, delta) {
+          let keranjang = JSON.parse(localStorage.getItem('keranjang')) || [];
+          keranjang[index].jumlah += delta;
+          if (keranjang[index].jumlah <= 0) {
+            keranjang.splice(index, 1);
+          }
+          localStorage.setItem('keranjang', JSON.stringify(keranjang));
+          tampilkanKeranjang();
+        }
+    
+        function hapusProduk(index) {
+          let keranjang = JSON.parse(localStorage.getItem('keranjang')) || [];
+          keranjang.splice(index, 1);
+          localStorage.setItem('keranjang', JSON.stringify(keranjang));
+          tampilkanKeranjang();
+        }
+    
+        function lanjutKeFormulir() {
+          window.location.href = "cart.html";
+        }
+    
+        function filterProduk() {
+          const kategori = document.getElementById('kategori').value.toLowerCase();
+          const pencarian = document.getElementById('pencarian').value.toLowerCase();
+          const produkItems = document.querySelectorAll('.produk-item');
+    
+          produkItems.forEach(item => {
+            const kategoriItem = item.getAttribute('data-kategori').toLowerCase();
+            const namaProduk = item.querySelector('h3').textContent.toLowerCase();
+            item.style.display = (kategori === '' || kategoriItem.includes(kategori)) && namaProduk.includes(pencarian)
+              ? 'block'
+              : 'none';
+          });
+        }
+    
+        const kataKata = [
+          "Kenyang dengan sentuhan masakan rumahan yang khas!",
+          "Nikmati aneka makanan dan minuman favorit setiap hari!",
+          "Diskon menarik setiap minggu hanya di Kedai JSM!",
+          "Cemilan dan minuman kekinian siap menemani harimu!",
+          "Camilan siap bikin senyum!",
+          "Makan enak, dompet aman!"
+        ];
+    
+        let indexKata = 0;
+        const kataPengantar = document.getElementById("kataPengantar");
+    
+        function gantiKataPengantar() {
+          indexKata = (indexKata + 1) % kataKata.length;
+          kataPengantar.classList.remove("fade-in");
+          void kataPengantar.offsetWidth;
+          kataPengantar.textContent = kataKata[indexKata];
+          kataPengantar.classList.add("fade-in");
+        }
+    
+        setInterval(gantiKataPengantar, 10000);
+    
+        // Inisialisasi tampilan keranjang saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', tampilkanKeranjang);
+      </script>
+</body>
+
+</html>
