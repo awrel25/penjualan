@@ -77,6 +77,26 @@
             border-radius: 8px;
         }
 
+        .iklan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            justify-items: center;
+            padding: 20px;
+        }
+
+        .iklan-grid img {
+            width: 100%;
+            max-width: 240px;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .iklan-grid img:hover {
+            transform: scale(1.03);
+        }
+
         .filter {
             display: flex;
             justify-content: space-between;
@@ -294,14 +314,20 @@
     </header>
     <div class="banner-iklan">
         <div class="iklan-grid">
-            <a href="https://link-iklan-1.com" target="_blank">
-                <img src="https://link-gambar-iklan.com/poster1.jpg" alt="Promo 1" />
+            <a href="https://raw.githubusercontent.com/awrel25/penjualan/b13a163c630a2509ab18bd526ee4814d70773b92/icons%20converter%2Cicons%20fitness%2Cicons%20maker%2Cicons….jpeg"
+                target="_blank">
+                <img src="https://raw.githubusercontent.com/awrel25/penjualan/b13a163c630a2509ab18bd526ee4814d70773b92/icons%20converter%2Cicons%20fitness%2Cicons%20maker%2Cicons….jpeg"
+                    alt="Promo 1" />
             </a>
-            <a href="https://link-iklan-2.com" target="_blank">
-                <img src="https://link-gambar-iklan.com/poster2.jpg" alt="Promo 2" />
+            <a href="https://raw.githubusercontent.com/awrel25/penjualan/b13a163c630a2509ab18bd526ee4814d70773b92/harga%20spesial%2Cdiskon%2Cpromo%2Charga%2Cmenawarkan%2Ctag….jpeg"
+                target="_blank">
+                <img src="https://raw.githubusercontent.com/awrel25/penjualan/b13a163c630a2509ab18bd526ee4814d70773b92/harga%20spesial%2Cdiskon%2Cpromo%2Charga%2Cmenawarkan%2Ctag….jpeg"
+                    alt="Promo 2" />
             </a>
-            <a href="https://link-iklan-3.com" target="_blank">
-                <img src="https://link-gambar-iklan.com/poster3.jpg" alt="Promo 3" />
+            <a href="https://raw.githubusercontent.com/awrel25/penjualan/b13a163c630a2509ab18bd526ee4814d70773b92/best%20food%2Cbest%20seller%2Cpricing%2Ctag%2Csuper%20sale%2Ctop….jpeg"
+                target="_blank">
+                <img src="https://raw.githubusercontent.com/awrel25/penjualan/b13a163c630a2509ab18bd526ee4814d70773b92/best%20food%2Cbest%20seller%2Cpricing%2Ctag%2Csuper%20sale%2Ctop….jpeg"
+                    alt="Promo 3" />
             </a>
         </div>
         <div class="filter">
