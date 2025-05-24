@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Laporkan Masalah</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #8e44ad;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #732d91;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+      color: #8e44ad;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Laporkan Masalah / Feedback</h2>
+    <form id="laporanForm" onsubmit="kirimLaporan(event)">
+      <label for="nama">Nama</label>
+      <input type="text" id="nama" name="nama" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="pesan">Pesan Laporan</label>
+      <textarea id="pesan" name="pesan" required></textarea>
+
+      <button type="submit">Kirim Bantuan</button>
+      <div class="loading" id="loadingText">Mengirim...</div>
+    </form>
+  </div>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwo8d7wGHYCgQ9zD-K3bdflxfXXIMmCgLn2b-ZeHww-y4SdG2znQDDRYGXgbqQtFCB5hw/exec';
+    const form = document.getElementById('laporanForm');
+    const loadingText = document.getElementById('loadingText');
+
+    function kirimLaporan(e) {
+      e.preventDefault();
+      loadingText.style.display = 'block';
+
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => {
+          loadingText.style.display = 'none';
+          alert('Terima kasih! Laporan Anda berhasil dikirim.');
+          form.reset();
+        })
+        .catch(error => {
+          loadingText.style.display = 'none';
+          alert('Maaf, terjadi kesalahan saat mengirim laporan.');
+          console.error('Error!', error.message);
+        });
+    }
+  </script>
+
+</body>
+</html>
