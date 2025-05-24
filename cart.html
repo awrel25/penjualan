@@ -97,6 +97,8 @@
           <tr>
             <th>Produk</th>
             <th>Harga</th>
+            <th>Jumlah</th>
+            <th>Subtotal</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -104,116 +106,129 @@
       <p><strong>Total: Rp<span id="totalHarga">0</span></strong></p>
     </div>
 
-    <form onsubmit="prosesPesanan(event)">
-      <label>Nama: <input type="text" id="nama" required></label>
+    <form id="Data-Penjualan" name="Data-Penjualan" onsubmit="prosesPesanan(event)">
+      <label>Nama:
+        <input type="text" id="nama" name="nama" required>
+      </label>
+
       <label>Alamat Lengkap:
-        <input type="text" id="alamat" placeholder="Masukkan alamat lengkap" required>
+        <input type="text" id="alamat" name="alamat" placeholder="Masukkan alamat lengkap" required>
         <button type="button" onclick="cariAlamat()">Cari Alamat</button>
       </label>
+
       <div id="map"></div>
       <p>Latitude: <span id="lat">-</span> | Longitude: <span id="lon">-</span></p>
-      <label>No HP: <input type="text" id="hp" required></label>
+
+      <input type="hidden" name="latitude" id="input-lat">
+      <input type="hidden" name="longitude" id="input-lon">
+
+      <label>No HP:
+        <input type="text" id="hp" name="no_hp" required>
+      </label>
+
       <label>Metode Pengantaran:
-        <select id="pengantaran">
+        <select id="pengantaran" name="pengantaran">
           <option value="0">Ambil Sendiri (Gratis)</option>
           <option value="10000">Antar (Rp10.000)</option>
         </select>
       </label>
+
       <button type="submit">Kirim Pesanan</button>
     </form>
   </div>
 
-  <script>
-    const keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
-    const tbody = document.querySelector("#tabelKeranjang tbody");
-    const totalEl = document.getElementById("totalHarga");
+<script>
+  const keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+  const tbody = document.querySelector("#tabelKeranjang tbody");
+  const totalEl = document.getElementById("totalHarga");
 
-    function renderKeranjang() {
-      let total = 0;
-      tbody.innerHTML = "";
+  function renderKeranjang() {
+    let total = 0;
+    tbody.innerHTML = "";
 
-      keranjang.forEach(item => {
-        const subtotal = item.harga * item.jumlah;
-        total += subtotal;
-        tbody.innerHTML += `
-            <tr>
-                <td>${item.nama}</td>
-                <td>Rp${item.harga.toLocaleString()}</td>
-                <td>${item.jumlah}</td>
-                <td>Rp${subtotal.toLocaleString()}</td>
-            </tr>
-        `;
-      });
-
-      totalEl.textContent = total.toLocaleString();
-    }
-
-    renderKeranjang();
-
-
-    function prosesPesanan(e) {
-      e.preventDefault();
-
-      const nama = document.getElementById("nama").value;
-      const alamat = document.getElementById("alamat").value;
-      const hp = document.getElementById("hp").value;
-      const pengantaran = parseInt(document.getElementById("pengantaran").value);
-      const total = keranjang.reduce((sum, item) => sum + item.harga * item.jumlah, 0) + pengantaran;
-
-      const lat = document.getElementById("lat").textContent;
-      const lon = document.getElementById("lon").textContent;
-
-      alert(`Pesanan atas nama ${nama} berhasil dikirim!\nTotal: Rp${total.toLocaleString()}\nKoordinat: ${lat}, ${lon}`);
-
-      localStorage.removeItem("keranjang");
-      window.location.href = "index.html";
-    }
-
-    <!-- Leaflet JS & CSS -->
-    // Inisialisasi peta
-    var map = L.map('map').setView([-6.2, 106.8], 13); // Default Jakarta
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    var marker = L.marker(map.getCenter(), { draggable: true }).addTo(map);
-
-    marker.on('dragend', function () {
-      updateKoordinat(marker.getLatLng());
+    keranjang.forEach(item => {
+      const subtotal = item.harga * item.jumlah;
+      total += subtotal;
+      tbody.innerHTML += `
+          <tr>
+              <td>${item.nama}</td>
+              <td>Rp${item.harga.toLocaleString()}</td>
+              <td>${item.jumlah}</td>
+              <td>Rp${subtotal.toLocaleString()}</td>
+          </tr>
+      `;
     });
 
-    function updateKoordinat(latlng) {
-      document.getElementById('lat').textContent = latlng.lat.toFixed(6);
-      document.getElementById('lon').textContent = latlng.lng.toFixed(6);
-    }
+    totalEl.textContent = total.toLocaleString();
+  }
+
+  renderKeranjang();
+
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwG_Lfp8W3_84CaHxPYG_tnSV2y_NFAKpBT8zbNEqi9T_dEQvZLfRyDK-yfg9uXd9g3/exec';
+  const form = document.forms['Data-Penjualan'];
+
+  function prosesPesanan(e) {
+    e.preventDefault();
+
     const lat = document.getElementById("lat").textContent;
     const lon = document.getElementById("lon").textContent;
+    document.getElementById("input-lat").value = lat;
+    document.getElementById("input-lon").value = lon;
 
-    // Lalu kamu bisa tambahkan di alert atau proses form
-    console.log(`Koordinat Lokasi: ${lat}, ${lon}`);
+    const nama = document.getElementById("nama").value;
+    const pengantaran = parseInt(document.getElementById("pengantaran").value) || 0;
+    const total = keranjang.reduce((sum, item) => sum + item.harga * item.jumlah, 0) + pengantaran;
 
+    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+      .then(response => {
+        alert(`Pesanan atas nama ${nama} berhasil dikirim!\nTotal: Rp${total.toLocaleString()}\nKoordinat: ${lat}, ${lon}. Admin akan segera menghubungi jika pesanan sudah siap, ditunggu ya 🫰🏻 (Estimasi waktu 10-15 menit)`);
+        localStorage.removeItem("keranjang");
+        window.location.href = "index.html";
+      })
+      .catch(error => {
+        console.error('Error!', error.message);
+        alert('Terjadi kesalahan saat mengirim data.');
+      });
+  }
 
-    function cariAlamat() {
-      var query = document.getElementById('alamat').value;
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.length > 0) {
-            var lat = parseFloat(data[0].lat);
-            var lon = parseFloat(data[0].lon);
-            map.setView([lat, lon], 16);
-            marker.setLatLng([lat, lon]);
-            updateKoordinat({ lat, lng: lon });
-          } else {
-            alert('Alamat tidak ditemukan!');
-          }
-        });
-    }
+  // Leaflet Map
+  var map = L.map('map').setView([-6.2, 106.8], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
 
+  var marker = L.marker(map.getCenter(), { draggable: true }).addTo(map);
+
+  marker.on('dragend', function () {
     updateKoordinat(marker.getLatLng());
+  });
 
-  </script>
+  function updateKoordinat(latlng) {
+    document.getElementById('lat').textContent = latlng.lat.toFixed(6);
+    document.getElementById('lon').textContent = latlng.lng.toFixed(6);
+    document.getElementById('input-lat').value = latlng.lat.toFixed(6);
+    document.getElementById('input-lon').value = latlng.lng.toFixed(6);
+  }
 
+  function cariAlamat() {
+    var query = document.getElementById('alamat').value;
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length > 0) {
+          var lat = parseFloat(data[0].lat);
+          var lon = parseFloat(data[0].lon);
+          map.setView([lat, lon], 16);
+          marker.setLatLng([lat, lon]);
+          updateKoordinat({ lat, lng: lon });
+        } else {
+          alert('Alamat tidak ditemukan!');
+        }
+      });
+  }
+
+  updateKoordinat(marker.getLatLng());
+</script>
 </body>
 
-</html>
+</html> 
